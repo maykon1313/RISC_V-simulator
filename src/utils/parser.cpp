@@ -6,6 +6,7 @@
 #include <algorithm>
 
 using namespace std;
+namespace Constantes {const string WHITESPACE = " \t\n\r";}
 
 vector<string> dividir_instrucoes (const string& linha) {
     vector<string> partes;
@@ -21,6 +22,17 @@ vector<string> dividir_instrucoes (const string& linha) {
     }
 
     return partes;
+}
+
+string remover_espaco(const string& linha) {
+    size_t comeco = linha.find_first_not_of(Constantes::WHITESPACE);
+
+    // string::npos = -1 = Não encontrado.
+    if (comeco == string::npos) return "";
+
+    size_t fim = linha.find_last_not_of(Constantes::WHITESPACE);
+
+    return linha.substr(comeco, fim - comeco + 1);
 }
 
 vector<vector<string>> lerInstrucoes (const string& nome_do_arquivo) {
@@ -41,8 +53,8 @@ vector<vector<string>> lerInstrucoes (const string& nome_do_arquivo) {
         if (comentario != string::npos) { 
             linha = linha.substr(0, comentario);
         }
-
-        linha.erase(remove_if(linha.begin(), linha.end(), ::isspace), linha.end());
+        
+        linha = remover_espaco(linha);
 
         if (!linha.empty()) {
             partes = dividir_instrucoes(linha);

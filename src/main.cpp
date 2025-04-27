@@ -14,5 +14,8 @@ int main() {
 
     simulator.executar();
 
+    
+    simulator.estado();
+
     return 0;
 }

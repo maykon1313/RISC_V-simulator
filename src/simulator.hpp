@@ -14,11 +14,13 @@ class Simulator {
 public:
     Simulator(const string& entrada);
     void executar();
+    void estado();
+
+    Memory memoria;
+    Registers registro;
 
 private:
     vector<vector<string>> instrucoes;
-    Memory memoria;
-    Registers registro;
     uint32_t PC_counter;
 };
 

@@ -4,7 +4,43 @@
 #include "memory.hpp"
 #include <iostream>
 
-void formato_R(string opcode, string rd,  string rs1, string rs2) {
+
+using namespace std;
+
+void validar_registrador(const string& reg) {
+    if (reg.empty() || reg[0] != 't') {
+        cerr << "Registrador inválido: " << reg << endl;
+        exit(EXIT_FAILURE);
+    }
+    try {
+        int idx = stoi(reg.substr(1));
+        if (idx < 0 || idx >= 32) {
+            cerr << "Índice de registrador fora do intervalo permitido (0 a 31): " << reg << endl;
+            exit(EXIT_FAILURE);
+        }
+    } catch (const invalid_argument& e) {
+        cerr << "Erro ao converter registrador: " << reg << endl;
+        exit(EXIT_FAILURE);
+    }
+}
+
+void validar_imediato(const string& imm) {
+    if (imm.empty()) {
+        cerr << "Imediato vazio." << endl;
+        exit(EXIT_FAILURE);
+    }
+    try {
+        stoi(imm);
+    } catch (const invalid_argument& e) {
+        cerr << "Erro ao converter imediato: " << imm << endl;
+        exit(EXIT_FAILURE);
+    }
+}
+
+void formato_R(string opcode, string rd, string rs1, string rs2, Registers& registro) {
+    validar_registrador(rd);
+    validar_registrador(rs1);
+    validar_registrador(rs2);
     int rd_idx = stoi(rd.substr(1));
     int rs1_idx = stoi(rs1.substr(1));
     int rs2_idx = stoi(rs2.substr(1));
@@ -34,7 +70,9 @@ void formato_R(string opcode, string rd,  string rs1, string rs2) {
     }
 }
 
-void formato_U(string opcode, string rd,string imm) {
+void formato_U(string opcode, string rd, string imm, Registers& registro) {
+    validar_registrador(rd);
+    validar_imediato(imm);
     int rd_idx = stoi(rd.substr(1));
     int32_t imm_val = stoi(imm);
 
@@ -47,14 +85,21 @@ void formato_U(string opcode, string rd,string imm) {
     }
 }
 
-void formato_I(string opcode, string rd,string rs1, string imm) {
+void formato_I(string opcode, string rd, string rs1, string imm, Registers& registro) {
+    validar_registrador(rd);    
+    validar_imediato(imm);
     int rd_idx = stoi(rd.substr(1));
-    int rs1_idx = stoi(rs1.substr(1));
+    
+    
+    int rs1_idx = 0;
+    if (rs1 != "zero") {
+        int rs1_idx = stoi(rs1.substr(1));
+    }
+
     int32_t imm_val = stoi(imm);
 
-
     if (opcode == "addi") {
-
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) + imm_val);
     } else if (opcode == "xori") {
 
     } else if (opcode == "ori") {
@@ -86,11 +131,17 @@ void formato_I(string opcode, string rd,string rs1, string imm) {
     }
 }
 
-void formato_S(string opcode, string rs2,string offset_rs1) {
-    int rs2_idx = stoi(rs2.substr(1));
+void formato_S(string opcode, string rs2, string offset_rs1, Registers& registro, Memory& memoria) {
+    validar_registrador(rs2);
     auto pos = offset_rs1.find('(');
-    int offset = stoi(offset_rs1.substr(0, pos));
-    int rs1_idx = stoi(offset_rs1.substr(pos + 2, offset_rs1.size() - pos - 3));
+    if (pos == string::npos || offset_rs1.back() != ')') {
+        cerr << "Formato inválido para offset(rs1): " << offset_rs1 << endl;
+        exit(EXIT_FAILURE);
+    }
+    string offset = offset_rs1.substr(0, pos);
+    string rs1 = offset_rs1.substr(pos + 1, offset_rs1.size() - pos - 2);
+    validar_imediato(offset);
+    validar_registrador(rs1);
 
     if (opcode == "sb") {
 
@@ -129,7 +180,7 @@ char identificarFormato(const string& opcode) {
     }
 }
 
-void executarInstrucoes(vector<string> linha) {
+void executarInstrucoes(vector<string> linha, Registers& registro, Memory& memoria) {
     if (linha.empty()) {
         cerr << "Linha vazia passada para execução." << endl;
         return;
@@ -149,7 +200,7 @@ void executarInstrucoes(vector<string> linha) {
         rs1 = linha[2];
         rs2 = linha[3];
 
-        formato_R(opcode, rd, rs1, rs2);
+        formato_R(opcode, rd, rs1, rs2, registro);
     }
 
     // Formato U (upper immediate):
@@ -162,7 +213,7 @@ void executarInstrucoes(vector<string> linha) {
         rd = linha[1];
         imm = linha[2];
 
-        formato_U(opcode, rd, imm);
+        formato_U(opcode, rd, imm, registro);
     }
 
     // Formato I (imediato; inclui addi e cargas de memória):
@@ -176,7 +227,7 @@ void executarInstrucoes(vector<string> linha) {
         rs1 = linha[2];
         imm = linha[3];
 
-        formato_I(opcode, rd, rs1, imm);
+        formato_I(opcode, rd, rs1, imm, registro);
     }
 
     // Formato S (armazenamento):
@@ -189,7 +240,7 @@ void executarInstrucoes(vector<string> linha) {
         rs2 = linha[1];
         offset_rs1 = linha[2];
 
-        formato_S(opcode, rs2, offset_rs1);
+        formato_S(opcode, rs2, offset_rs1, registro, memoria);
     }
 
     // Instrução desconhecida:
