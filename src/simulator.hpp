@@ -1,11 +1,12 @@
 #ifndef SIMULATOR_HPP
 #define SIMULATOR_HPP
 
-#include <vector>
-#include <string>
 #include "instruction.hpp"
 #include "memory.hpp"
 #include "registers.hpp"
+#include <vector>
+#include <string>
+#include <cstdint>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ private:
     vector<vector<string>> instrucoes;
     Memory memoria;
     Registers registro;
+    uint32_t PC_counter;
 };
 
 #endif // SIMULATOR_HPP

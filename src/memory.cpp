@@ -1,32 +1,22 @@
 #include "memory.hpp"
 #include <iostream>
-#include <vector>
 #include <cstdint>
 
-using namespace std;
+Memory::Memory(size_t size) : memory(size, 0) {}
 
-class Memory {
-public:
-    Memory(size_t size) : memory(size, 0) {}
-
-    void erro_de_memoria (size_t address) {
-        if (address >= memory.size()) {
-            cerr << "Tentativa de leitura na memória fora do limite: " << address << endl;
-            exit(EXIT_FAILURE);
-        }
-
+void Memory::erro_de_memoria(size_t address) const {
+    if (address >= memory.size()) {
+        std::cerr << "Tentativa de acesso fora dos limites da memória: endereço " << address << std::endl;
+        std::exit(EXIT_FAILURE);
     }
+}
 
-    uint8_t ler_na_memoria (size_t address) {
-        erro_de_memoria(address);
-        return memory[address];
-    }
+uint8_t Memory::ler_na_memoria(size_t address) const {
+    erro_de_memoria(address);
+    return memory[address];
+}
 
-    void escrever_na_memoria (size_t address, uint8_t value) {
-        erro_de_memoria(address); 
-        memory[address] = value;
-    }
-
-private:
-    vector<uint8_t> memory;
-};
+void Memory::escrever_na_memoria(size_t address, uint8_t value) {
+    erro_de_memoria(address);
+    memory[address] = value;
+}

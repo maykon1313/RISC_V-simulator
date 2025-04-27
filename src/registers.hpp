@@ -3,7 +3,6 @@
 
 #include <array>
 #include <cstdint>
-#include <stdexcept>
 
 using namespace std;
 

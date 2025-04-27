@@ -1,27 +1,17 @@
-#include "utils/parser.hpp"
 #include "simulator.hpp"
+#include "utils/parser.hpp"
 #include "instruction.hpp"
 #include "memory.hpp"
 #include "registers.hpp"
 #include <iostream>
-#include <vector>
 
-using namespace std;
+Simulator::Simulator(const std::string& entrada) 
+    : memoria(Memory(32)), registro(Registers()), PC_counter(0) {
+    instrucoes = lerInstrucoes(entrada);
+}
 
-class Simulator {
-    public:
-    vector<vector<string>> instrucoes;
-    Memory memoria;
-    Registers registro;
-    
-    Simulator(const string& entrada) : memoria(32), registro() {
-        instrucoes = lerInstrucoes(entrada);
+void Simulator::executar() {
+    for (; PC_counter < instrucoes.size(); PC_counter++) {
+        executarInstrucoes(instrucoes[PC_counter]);
     }
-
-    void executar() {
-        for (const auto& instrucao : instrucoes) {
-            executarInstrucoes(instrucao);
-        }
-    }
-
-};
+}

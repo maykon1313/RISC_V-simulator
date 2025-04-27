@@ -1,10 +1,8 @@
 #include "instruction.hpp"
+#include "simulator.hpp"
 #include "registers.hpp"
 #include "memory.hpp"
 #include <iostream>
-
-// Declare 'registro' as an external global object
-extern Registers registro; 
 
 void formato_R(string opcode, string rd,  string rs1, string rs2) {
     int rd_idx = stoi(rd.substr(1));
