@@ -3,64 +3,8 @@
 #include "memory.hpp"
 #include <iostream>
 
-/*
-#include <unordered_map>
-#include <functional>
-
-// Função para decodificar e executar instruções RISC-V
-void executeInstruction(const std::string& opcode, const std::vector<std::string>& operands) {
-    static std::unordered_map<std::string, std::function<void(const std::vector<std::string>&)>> instructionMap = {
-        {"add", [](const std::vector<std::string>& ops) {
-            int rd = idxReg(ops[0]);
-            int rs1 = idxReg(ops[1]);
-            int rs2 = idxReg(ops[2]);
-            regs[rd] = regs[rs1] + regs[rs2];
-        }},
-        {"sub", [](const std::vector<std::string>& ops) {
-            int rd = idxReg(ops[0]);
-            int rs1 = idxReg(ops[1]);
-            int rs2 = idxReg(ops[2]);
-            regs[rd] = regs[rs1] - regs[rs2];
-        }},
-        {"andi", [](const std::vector<std::string>& ops) {
-            int rd = idxReg(ops[0]);
-            int rs1 = idxReg(ops[1]);
-            int imm = parseImm(ops[2]);
-            regs[rd] = regs[rs1] & imm;
-        }},
-        {"ori", [](const std::vector<std::string>& ops) {
-            int rd = idxReg(ops[0]);
-            int rs1 = idxReg(ops[1]);
-            int imm = parseImm(ops[2]);
-            regs[rd] = regs[rs1] | imm;
-        }},
-        {"xori", [](const std::vector<std::string>& ops) {
-            int rd = idxReg(ops[0]);
-            int rs1 = idxReg(ops[1]);
-            int imm = parseImm(ops[2]);
-            regs[rd] = regs[rs1] ^ imm;
-        }},
-        {"lw", [](const std::vector<std::string>& ops) {
-            int rd = idxReg(ops[0]);
-            auto [offset, base] = parseOffsetBase(ops[1]);
-            regs[rd] = memory[regs[base] + offset];
-        }},
-        {"sw", [](const std::vector<std::string>& ops) {
-            int rs2 = idxReg(ops[0]);
-            auto [offset, base] = parseOffsetBase(ops[1]);
-            memory[regs[base] + offset] = regs[rs2];
-        }},
-        // Adicione mais instruções conforme necessário
-    };
-
-    auto it = instructionMap.find(opcode);
-    if (it != instructionMap.end()) {
-        it->second(operands);
-    } else {
-        std::cerr << "Instrução não reconhecida: " << opcode << std::endl;
-    }
-}
-*/
+// Declare 'registro' as an external global object
+extern Registers registro; 
 
 void formato_R(string opcode, string rd,  string rs1, string rs2) {
     int rd_idx = stoi(rd.substr(1));
@@ -68,9 +12,9 @@ void formato_R(string opcode, string rd,  string rs1, string rs2) {
     int rs2_idx = stoi(rs2.substr(1));
 
     if (opcode == "add") {
-        regs.escrever_no_registro(rd_idx, regs.ler_no_registro(rs1_idx) + regs.ler_no_registro(rs2_idx));
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) + registro.ler_no_registro(rs2_idx));
     } else if (opcode == "sub") {
-        regs.escrever_no_registro(rd_idx, regs.ler_no_registro(rs1_idx) - regs.ler_no_registro(rs2_idx));
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) - registro.ler_no_registro(rs2_idx));
     } else if (opcode == "xor") {
 
     } else if (opcode == "or") {
@@ -97,7 +41,7 @@ void formato_U(string opcode, string rd,string imm) {
     int32_t imm_val = stoi(imm);
 
     if (opcode == "lui") {
-        regs.escrever_no_registro(rd_idx, imm_val << 12);
+        registro.escrever_no_registro(rd_idx, imm_val << 12);
     } else if (opcode == "auipc") {
 
     } else {

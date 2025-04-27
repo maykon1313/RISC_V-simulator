@@ -11,20 +11,13 @@ using namespace std;
 
 class Simulator {
 public:
-    Simulator();
-    void lerInstrucoes (const vector<string>& instructions);
-    void execute();
-    void reset();
+    Simulator(const string& entrada);
+    void executar();
 
 private:
-    Memory memory;
-    Registers registers;
-    vector<Instruction> instructionSet;
-    size_t programCounter;
-
-    void fetch();
-    void decode(const Instruction& instruction);
-    void executeInstruction(const Instruction& instruction);
+    vector<vector<string>> instrucoes;
+    Memory memoria;
+    Registers registro;
 };
 
 #endif // SIMULATOR_HPP

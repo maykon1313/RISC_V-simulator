@@ -17,6 +17,7 @@ public:
 private:
     // 32 registers (x0 to x31)
     array<uint32_t, 32> regs; 
+    void erro_no_registro(int index) const;
 };
 
 #endif // REGISTERS_HPP

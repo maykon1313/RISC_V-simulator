@@ -1,15 +1,18 @@
 #include <iostream>
 #include "simulator.hpp"
 
+using namespace std;
+
 int main() {
-    Simulator simulator;
+    string arquivo_de_entrada;
+    
+    cout << "Digite o nome do arquivo de entrada (com .txt): ";
+    cin >> arquivo_de_entrada;
+    cout << endl;
 
-    if (!simulator.loadInstructions("instructions.txt")) {
-        
-        return 1;
-    }
+    Simulator simulator = Simulator(arquivo_de_entrada);
 
-    simulator.execute(); // Start the execution loop
+    simulator.executar();
 
     return 0;
 }

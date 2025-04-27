@@ -1,7 +1,6 @@
 #include "memory.hpp"
 #include <iostream>
 #include <vector>
-#include <stdexcept>
 #include <cstdint>
 
 using namespace std;
@@ -12,8 +11,10 @@ public:
 
     void erro_de_memoria (size_t address) {
         if (address >= memory.size()) {
-            throw out_of_range("Memory read out of bounds");
+            cerr << "Tentativa de leitura na memória fora do limite: " << address << endl;
+            exit(EXIT_FAILURE);
         }
+
     }
 
     uint8_t ler_na_memoria (size_t address) {
