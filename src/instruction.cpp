@@ -47,86 +47,147 @@ void formato_R(string opcode, string rd, string rs1, string rs2, Registers& regi
 
     if (opcode == "add") {
         registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) + registro.ler_no_registro(rs2_idx));
-    } else if (opcode == "sub") {
+    } 
+    
+    else if (opcode == "sub") {
         registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) - registro.ler_no_registro(rs2_idx));
-    } else if (opcode == "xor") {
-
-    } else if (opcode == "or") {
-
-    } else if (opcode == "and") {
-
-    } else if (opcode == "sll") {
-
-    } else if (opcode == "srl") {
-
-    } else if (opcode == "sra") {
-
-    } else if (opcode == "slt") {
-
-    } else if (opcode == "sltu") {
-
-    } else {
+    } 
+    
+    else if (opcode == "xor") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) ^ registro.ler_no_registro(rs2_idx));
+    } 
+    
+    else if (opcode == "or") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) | registro.ler_no_registro(rs2_idx));
+    } 
+    
+    else if (opcode == "and") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) & registro.ler_no_registro(rs2_idx));
+    } 
+    
+    else if (opcode == "sll") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) << (registro.ler_no_registro(rs2_idx) & 0x1F));
+    } 
+    
+    else if (opcode == "srl") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) >> (registro.ler_no_registro(rs2_idx) & 0x1F));
+    } 
+    
+    else if (opcode == "sra") {
+        registro.escrever_no_registro(rd_idx, (int32_t)registro.ler_no_registro(rs1_idx) >> (registro.ler_no_registro(rs2_idx) & 0x1F));
+    } 
+    
+    else if (opcode == "slt") {
+        registro.escrever_no_registro(rd_idx, (int32_t)registro.ler_no_registro(rs1_idx) < (int32_t)registro.ler_no_registro(rs2_idx));
+    } 
+    
+    else if (opcode == "sltu") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) < registro.ler_no_registro(rs2_idx));
+    } 
+    
+    else {
         cerr << "Instrução não identificada: " << opcode << endl;
     }
 }
 
-void formato_U(string opcode, string rd, string imm, Registers& registro) {
+void formato_U(string opcode, string rd, string imm, Registers& registro, uint32_t PC_counter) {
     validar_registrador(rd);
     validar_imediato(imm);
     int rd_idx = stoi(rd.substr(1));
-    int32_t imm_val = stoi(imm);
+    int32_t imm_val = stoi(imm, nullptr, 0); // Hex para Dec
+
+    uint32_t valor = static_cast<uint32_t>(imm_val) << 12;
 
     if (opcode == "lui") {
-        registro.escrever_no_registro(rd_idx, imm_val << 12);
-    } else if (opcode == "auipc") {
-
-    } else {
+        registro.escrever_no_registro(rd_idx, valor);
+    } 
+    
+    else if (opcode == "auipc") {
+        registro.escrever_no_registro(rd_idx, valor + PC_counter);
+    } 
+    
+    else {
         cerr << "Instrução não identificada: " << opcode << endl;
     }
 }
 
-void formato_I(string opcode, string rd, string rs1, string imm, Registers& registro) {
+void formato_I(string opcode, string rd, string rs1, string imm, Registers& registro, Memory& memoria) {
     validar_registrador(rd);    
     validar_imediato(imm);
     int rd_idx = stoi(rd.substr(1));
     
-    
     int rs1_idx = 0;
-    if (rs1 != "zero") {
-        int rs1_idx = stoi(rs1.substr(1));
+    if (rs1 != "zero" && rs1 != "0") {
+        rs1_idx = stoi(rs1.substr(1));
     }
 
     int32_t imm_val = stoi(imm);
 
     if (opcode == "addi") {
         registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) + imm_val);
-    } else if (opcode == "xori") {
-
-    } else if (opcode == "ori") {
-
-    } else if (opcode == "andi") {
-
-    } else if (opcode == "slli") {
-
-    } else if (opcode == "srli") {
-
-    } else if (opcode == "srai") {
-
-    } else if (opcode == "slti") {
-
-    } else if (opcode == "sltiu") {
-
-    } else if (opcode == "lb") {
-
-    } else if (opcode == "lh") {
-
-    } else if (opcode == "lw") {
-
-    } else if (opcode == "lbu") {
-
-    } else if (opcode == "lhu") {
-
-    } else {
+    } 
+    
+    else if (opcode == "xori") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) ^ imm_val);
+    } 
+    
+    else if (opcode == "ori") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) | imm_val);
+    } 
+    
+    else if (opcode == "andi") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) & imm_val);
+    } 
+    
+    else if (opcode == "slli") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) << (imm_val & 0x1F));
+    } 
+    
+    else if (opcode == "srli") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) >> (imm_val & 0x1F));
+    } 
+    
+    else if (opcode == "srai") {
+        registro.escrever_no_registro(rd_idx, (int32_t)registro.ler_no_registro(rs1_idx) >> (imm_val & 0x1F));
+    } 
+    
+    else if (opcode == "slti") {
+        registro.escrever_no_registro(rd_idx, (int32_t)registro.ler_no_registro(rs1_idx) < imm_val);
+    } 
+    
+    else if (opcode == "sltiu") {
+        registro.escrever_no_registro(rd_idx, registro.ler_no_registro(rs1_idx) < (uint32_t)imm_val);
+    } 
+    
+    else if (opcode == "lb") {
+        registro.escrever_no_registro(rd_idx, (int8_t)memoria.ler_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val));
+    } 
+    
+    else if (opcode == "lh") {
+        uint16_t halfword = memoria.ler_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val) |
+                            (memoria.ler_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val + 1) << 8);
+        registro.escrever_no_registro(rd_idx, (int16_t)halfword);
+    } 
+    
+    else if (opcode == "lw") {
+        uint32_t word = memoria.ler_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val) |
+                        (memoria.ler_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val + 1) << 8) |
+                        (memoria.ler_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val + 2) << 16) |
+                        (memoria.ler_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val + 3) << 24);
+        registro.escrever_no_registro(rd_idx, word);
+    } 
+    
+    else if (opcode == "lbu") {
+        registro.escrever_no_registro(rd_idx, memoria.ler_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val));
+    } 
+    
+    else if (opcode == "lhu") {
+        uint16_t halfword = memoria.ler_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val) |
+                            (memoria.ler_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val + 1) << 8);
+        registro.escrever_no_registro(rd_idx, halfword);
+    } 
+    
+    else {
         cerr << "Instrução não identificada: " << opcode << endl;
     }
 }
@@ -143,13 +204,30 @@ void formato_S(string opcode, string rs2, string offset_rs1, Registers& registro
     validar_imediato(offset);
     validar_registrador(rs1);
 
+    int32_t imm_val = stoi(offset);
+    int rs1_idx = stoi(rs1.substr(1));
+    int rs2_idx = stoi(rs2.substr(1));
+
     if (opcode == "sb") {
-
-    } else if (opcode == "sh") {
-
-    } else if (opcode == "sw") {
-
-    } else {
+        uint8_t byte = registro.ler_no_registro(rs2_idx) & 0xFF;
+        memoria.escrever_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val, byte);
+    } 
+    
+    else if (opcode == "sh") {
+        uint16_t halfword = registro.ler_no_registro(rs2_idx) & 0xFFFF;
+        memoria.escrever_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val, halfword & 0xFF);
+        memoria.escrever_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val + 1, (halfword >> 8) & 0xFF);
+    } 
+    
+    else if (opcode == "sw") {
+        uint32_t word = registro.ler_no_registro(rs2_idx);
+        memoria.escrever_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val, word & 0xFF);
+        memoria.escrever_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val + 1, (word >> 8) & 0xFF);
+        memoria.escrever_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val + 2, (word >> 16) & 0xFF);
+        memoria.escrever_na_memoria(registro.ler_no_registro(rs1_idx) + imm_val + 3, (word >> 24) & 0xFF);
+    } 
+    
+    else {
         cerr << "Instrução não identificada: " << opcode << endl;
     }
 }
@@ -180,7 +258,7 @@ char identificarFormato(const string& opcode) {
     }
 }
 
-void executarInstrucoes(vector<string> linha, Registers& registro, Memory& memoria) {
+void executarInstrucoes(vector<string> linha, Registers& registro, Memory& memoria, uint32_t PC_counter) {
     if (linha.empty()) {
         cerr << "Linha vazia passada para execução." << endl;
         return;
@@ -213,7 +291,7 @@ void executarInstrucoes(vector<string> linha, Registers& registro, Memory& memor
         rd = linha[1];
         imm = linha[2];
 
-        formato_U(opcode, rd, imm, registro);
+        formato_U(opcode, rd, imm, registro, PC_counter);
     }
 
     // Formato I (imediato; inclui addi e cargas de memória):
@@ -227,7 +305,7 @@ void executarInstrucoes(vector<string> linha, Registers& registro, Memory& memor
         rs1 = linha[2];
         imm = linha[3];
 
-        formato_I(opcode, rd, rs1, imm, registro);
+        formato_I(opcode, rd, rs1, imm, registro, memoria);
     }
 
     // Formato S (armazenamento):
