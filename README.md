@@ -66,19 +66,19 @@ sw   t3, 0(t4)         # memória[268435456] = 30
 
 #### Arquivo `entrada2.txt`:
 ```assembly
-addi t0, zero, 5       # t0 = 5
-addi t1, zero, 7       # t1 = 7
+addi t1, zero, 5       # t1 = 5
+addi t2, zero, 7       # t2 = 7
 
 # linha comentada
-add  t2, t0, t1        # soma t0 e t1
+add  t3, t1, t2        # soma t1 e t2
 
-lui  t3, 0x10000       # carrega endereço base
-sw   t2, 0(t3)         # salva resultado
+lui  t4, 0x10000       # carrega endereço base
+sw   t3, 0(t4)         # salva resultado
 ```
 
 ### Formatos de instruções suportados
 
-- **Formato R**: `add t2, t0, t`
+- **Formato R**: `add t3, t1, t2`
 - **Formato I**: `addi t1, zero, 10`
 - **Formato S**: `sw t3, 0(t4)`
 - **Formato U**: `lui t4, HEXADECIMAL`
