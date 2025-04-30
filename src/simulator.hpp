@@ -14,7 +14,7 @@ class Simulator {
 public:
     Simulator(const string& entrada);
     void executar();
-    void estado();
+    void estado(const string& entrada);
 
     Memory memoria;
     Registers registro;

@@ -14,7 +14,7 @@ int main() {
 
     simulator.executar();
 
-    simulator.estado();
+    simulator.estado(arquivo_de_entrada);
 
     return 0;
 }

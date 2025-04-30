@@ -2,6 +2,9 @@
 #define MEMORY_HPP
 
 #include <map>
+#include <cstdint>
+
+using namespace std;
 
 class Memory {
 public:
