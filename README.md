@@ -49,6 +49,7 @@ Os arquivos de entrada devem conter instruções RISC-V válidas, uma por linha.
 
 - Cada linha deve conter uma instrução no formato RISC-V.
 - Os registradores devem ser referenciados como `t0`, `t1`, ..., `t31`.
+- O registrador `t0` deve ser mantido com o valor `0`.
 - Comentários podem ser adicionados após o caractere `#`.
 - Linhas em branco ou apenas com comentários serão ignoradas.
 
@@ -77,7 +78,7 @@ sw   t2, 0(t3)         # salva resultado
 
 ### Formatos de instruções suportados
 
-- **Formato R**: `add t2, t0, t
+- **Formato R**: `add t2, t0, t`
 - **Formato I**: `addi t1, zero, 10`
 - **Formato S**: `sw t3, 0(t4)`
 - **Formato U**: `lui t4, HEXADECIMAL`
